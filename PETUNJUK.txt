@@ -1,0 +1,33 @@
+LAB PEGAS — SIMULASI HUKUM HOOKE
+
+Buka simulasi-pegas.html dengan Chrome, Edge, atau Firefox.
+Berkas ini mandiri dan dapat digunakan tanpa koneksi internet.
+
+1. Pilih pegas Tunggal, Seri, atau Paralel.
+2. Atur konstanta pegas, massa, simpangan awal, dan redaman.
+3. Tekan Mulai, atau seret massa naik-turun lalu lepaskan untuk mulai berosilasi.
+4. Pilih grafik simpangan-waktu, gaya-simpangan, atau energi potensial.
+5. Mode Tarik statis menahan massa pada simpangan yang ditentukan:
+   gaya luar = k ekuivalen × x, gaya pemulih (pegas + berat) = −k ekuivalen × x.
+6. Ulangi mengembalikan kondisi awal tanpa mengubah pengaturan.
+   Mengubah parameter memulai waktu dan grafik dari nol.
+
+Model: pegas ideal tak bermassa, posisi vertikal, tanpa gesekan
+kecuali redaman viskos F_redaman = −b v. Periode yang ditampilkan
+adalah periode ideal tanpa redaman. Pada redaman kritis/lebih,
+gerak kembali ke setimbang tanpa berosilasi. Panah gaya menunjukkan
+gaya pemulih (pegas + berat), tanpa gaya redaman. Panjang panah dibatasi
+agar muat; nilai numerik adalah nilai fisik sebenarnya.
+
+Sumber yang dapat diedit: index.html, style.css, sketch.js.
+Pustaka lokal: p5.min.js versi 1.11.11 (lisensi LGPL-2.1).
+Dokumentasi p5.js: https://p5js.org/reference/
+Jalankan node package-local.cjs untuk membuat ulang HTML mandiri.
+Jalankan node verify.cjs untuk memeriksa model fisika.
+
+Simpangan x diukur dari setimbang gravitasi; arah bawah positif.
+Regangan setimbang = mg/k ekuivalen, dengan g = 9,81 m/s².
+Energi potensial yang ditampilkan adalah potensial efektif elastis +
+gravitasi relatif terhadap setimbang, yaitu ½ k ekuivalen x².
+Geometri pegas bersifat skematis; perubahan massa tidak menggeser
+posisi setimbang di layar.

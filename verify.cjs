@@ -1,0 +1,10 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert');
+const elements=new Map();
+function element(){return {value:1,style:{},classList:{toggle(){}},querySelector(){return element();},append(){},addEventListener(){}};}
+const ctx={document:{getElementById(id){if(!elements.has(id))elements.set(id,element());return elements.get(id);},createElement:element,querySelectorAll:()=>[]},p5:function(){},console};vm.createContext(ctx);vm.runInContext(fs.readFileSync('sketch.js','utf8'),ctx);
+vm.runInContext(`
+for(const type of ['single','series','parallel']){state.type=type;state.k1=200;state.k2=200;const expected={single:200,series:100,parallel:400}[type];if(effectiveK()!==expected)throw Error('k ekuivalen');}
+state.type='single';state.k1=100;state.m=1;state.b=0;state.a=.5;restart();const initial=.5*effectiveK()*state.x**2;for(let i=0;i<2000;i++)advance(.01);if(Math.abs(.5*effectiveK()*state.x**2+.5*state.m*state.v**2-initial)>1e-8)throw Error('Energi tidak kekal');
+for(const b of [1,Math.sqrt(8),5]){state.type='series';state.k1=20;state.k2=20;state.m=.2;state.b=b;restart();let last=Infinity;for(let i=0;i<1000;i++){advance(.01);let energy=.5*effectiveK()*state.x**2+.5*state.m*state.v**2;if(!Number.isFinite(energy)||energy>last+1e-9)throw Error('Redaman');last=energy;}}
+for(const type of ['single','series','parallel']){state.type=type;state.k1=100;state.k2=200;state.m=1;state.x=.4;state.a=.4;state.v=2;state.t=3;state.running=true;state.drag=true;resetEquilibrium();if(state.x!==0||state.v!==0||state.a!==0||state.t!==0||state.running||state.drag||state.history.length!==1||state.history[0].x!==0)throw Error('Reset setimbang');if(Math.abs(lengthChange()-9.81/effectiveK())>1e-10)throw Error('Regangan setimbang');advance(.1);if(state.x!==0||state.v!==0)throw Error('Setimbang tidak tetap');state.x=-.5;if(Math.abs(lengthChange()-(-.5+9.81/effectiveK()))>1e-10)throw Error('Perubahan panjang');}
+`,ctx);console.log('LULUS: konstanta ekuivalen; konservasi energi; redaman kurang, kritis, dan lebih.');

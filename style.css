@@ -1,0 +1,82 @@
+:root{font-family:Inter,Segoe UI,sans-serif;color:#183a3c;background:#f4f6f2;font-synthesis:none}*{box-sizing:border-box}body{margin:0}header{max-width:1400px;margin:auto;padding:25px 40px;border-bottom:1px solid #d8e1d9;display:flex;justify-content:space-between;align-items:center}.brand{font-size:30px;color:#00786c;display:flex;gap:12px;align-items:center}.brand span{font-weight:800;font-size:15px;letter-spacing:3px}.tag,.eyebrow{font-size:11px;letter-spacing:2px;font-weight:700;color:#6c827b}main{width:100%;max-width:1560px;margin:auto;padding:0 28px}.intro{display:flex;align-items:center;justify-content:space-between;padding:46px 0 30px;min-height:186px}h1{font-size:38px;letter-spacing:-1.3px;line-height:1.14;margin:12px 0}h1 em{font-family:Georgia,serif;font-weight:400;color:#64837b}p{font-size:14px;line-height:1.65;color:#647a73}.hero-formula{font:italic 44px Georgia;padding:20px 60px;color:#08786e}.hero-formula small{font:10px Segoe UI;letter-spacing:3px;display:block;margin-top:14px;text-align:center}.layout{display:grid;grid-template-columns:minmax(280px,375px) minmax(0,1fr);gap:24px}.workspace,aside{background:white;border:1px solid #dce4df;border-radius:22px;overflow:hidden}.toolbar{padding:24px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #edf1ee}.tabs{display:flex;background:#f0f4f1;border-radius:9px;padding:4px}button,select{font:inherit;cursor:pointer;border:1px solid #d6e0db;background:white;color:#36564d;border-radius:7px;padding:9px 13px;font-size:13px}button:hover{background:#e5f1ec}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #f0af42;outline-offset:3px}.tabs button{border:0;background:transparent}.tabs .active{background:#fff;color:#00786c;box-shadow:0 2px 5px #163c3415;font-weight:700}.status{font-size:12px;color:#74837c}canvas{display:block;max-width:100%}#simulation{touch-action:none}.transport{display:flex;gap:9px;align-items:center;padding:8px 22px 20px;flex-wrap:wrap}.primary{background:#087b6f;color:white;border-color:#087b6f}.primary:hover{background:#086357}.transport label{font-size:12px;margin-left:auto}.transport select{padding:7px}.transport>span{font-size:12px;font-variant-numeric:tabular-nums;color:#6a7e76}.metrics{margin:0 22px;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid #e2e9e4;border-bottom:1px solid #e2e9e4;padding:20px 0;gap:8px}.metrics small,.rule small{display:block;font-size:9px;letter-spacing:1.2px;color:#76867f}.metrics strong{display:block;font-size:19px;margin-top:7px;font-variant-numeric:tabular-nums}.graph-tools{display:flex;justify-content:space-between;align-items:center;padding:20px 22px 0;gap:12px}h2{font-size:15px;margin:0}.graph-tools select{max-width:65%;font-size:11px}aside{padding:28px}.muted{font-size:12px;margin-top:8px}.field{display:block;font-size:12px;margin:23px 0}.field select{width:100%;margin-top:9px}.control{margin:22px 0}.control label{display:flex;justify-content:space-between;font-size:12px;gap:8px}.control output{font-weight:700;color:#08796c;white-space:nowrap}.control input{width:100%;margin:13px 0 0;accent-color:#087b6f;cursor:pointer}.ends{display:flex;justify-content:space-between;font-size:10px;color:#84938c}.rule{background:#edf5ee;padding:16px;border-radius:9px}.rule strong{display:block;font-size:23px;margin-top:7px}.rule p{margin:7px 0 0;font-size:12px}fieldset{border:0;padding:0;margin:24px 0}legend{font-size:12px;font-weight:700;margin-bottom:10px}fieldset label{display:block;font-size:12px;margin:10px 0;color:#5b7168}input[type=checkbox]{accent-color:#087b6f;margin-right:7px}.energy{border-top:1px solid #e2e9e4;padding-top:20px}.energy>div{display:flex;justify-content:space-between;font-size:11px;margin-top:15px}.energy b{font-variant-numeric:tabular-nums}meter{display:block;width:100%;height:12px;margin-top:5px}meter::-webkit-meter-bar{background:#edf2ee;border:0}meter::-webkit-meter-optimum-value{background:#27a897}#ekbar::-webkit-meter-optimum-value{background:#e6ae45}.total{border-top:1px solid #e2e9e4;padding-top:15px}.notes{display:grid;grid-template-columns:repeat(3,1fr);gap:35px;padding:30px 0}.notes span{font-size:10px;letter-spacing:1px;color:#088071}.notes h3{font-size:15px;margin:10px 0}.notes p{font-size:12px;margin:0}footer{border-top:1px solid #d8e1d9;padding:20px 0 30px;font-size:10px;letter-spacing:1px;color:#7b8d83;display:flex;justify-content:space-between}@media(max-width:900px){main{padding:0 18px}header{padding:20px}.layout{grid-template-columns:1fr}aside{display:block}.hero-formula{padding:20px}.notes{gap:18px}.intro h1{font-size:30px}}@media(max-width:530px){.tag,.hero-formula{display:none}.intro{padding:25px 0}.metrics strong{font-size:14px}.metrics small{font-size:8px}.toolbar{padding:12px}.tabs button{padding:8px 10px}.transport{padding:10px 12px}.transport label{margin-left:0}.notes{grid-template-columns:1fr}footer{display:block}footer span{display:block;margin-top:9px}}
+
+/* Simulasi dan grafik sejajar pada layar desktop/tablet. */
+.experiment-row{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(280px,1fr);align-items:start}
+.experiment-row>*,#graphCanvas{min-width:0}
+.graph-panel{border-left:1px solid #e2e9e4;min-height:420px}
+.graph-panel .graph-tools{height:90px;display:flex;flex-direction:column;align-items:stretch;justify-content:center;padding:14px 20px;gap:10px}
+.graph-panel .graph-tools select{width:100%;max-width:100%}
+.workspace .metrics{margin-bottom:22px}
+@media(max-width:1100px){.layout{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:650px){.experiment-row{grid-template-columns:minmax(0,1fr)}.graph-panel{border-left:0;border-top:1px solid #e2e9e4}}
+.display-options{margin:18px 20px 0;padding:0 0 12px;border-bottom:1px solid #e2e9e4;display:flex;flex-wrap:wrap;gap:8px 15px}
+.display-options label{margin:0;font-size:11px}
+.graph-note{margin:0 20px 18px;font-size:11px;line-height:1.6}
+.how-to{margin-top:20px;border:1px solid #d6e0db;background:white;border-radius:10px;padding:14px 18px}
+.how-to summary{cursor:pointer;color:#087b6f;font-weight:700;font-size:14px}
+.how-to summary:focus-visible{outline:3px solid #f0af42;outline-offset:4px}
+.how-to ol{padding-left:22px;font-size:13px;line-height:1.8;color:#536f63}
+.how-to li{margin:7px 0}
+aside>.how-to{margin:0 0 24px;padding:12px;background:#f4f8f5}
+aside>.how-to summary{font-size:13px}
+.flowchart-link{display:block;margin:12px 0;color:#087b6f;text-decoration:none;border:1px solid #d6e0db;border-radius:10px;overflow:hidden;background:white}
+.flowchart-link img{display:block;width:100%;height:220px;object-fit:contain;padding:10px}
+.notes .flowchart-link span{display:block;padding:12px;text-align:center;background:#edf5ee;font-size:12px;letter-spacing:0;font-weight:700}
+.flowchart-link:hover{border-color:#087b6f}
+.flowchart-link:focus-visible{outline:3px solid #f0af42;outline-offset:3px}
+.length-info{margin:0 18px 20px;padding:15px;background:#edf5ee;border:1px solid #d8e6dc;border-radius:10px}
+.length-info h2{font-size:13px;margin-bottom:12px}
+.length-info>div{display:flex;justify-content:space-between;gap:10px;font-size:12px;margin:9px 0}
+.length-info strong{white-space:nowrap;font-variant-numeric:tabular-nums;color:#087b6f}
+.length-info p{font-size:11px;margin:9px 0 0;line-height:1.6}
+
+footer{display:block;text-align:center;font-size:12px;line-height:1.7;letter-spacing:0;padding:22px 12px 30px}footer strong{font-weight:600}
+
+/* Kartu pengukuran di atas area simulasi. */
+.workspace .metrics{margin:0 28px 16px;padding:0;border:0;gap:12px}
+.metrics>div{background:#edf5f2;border:1px solid #e3ede7;border-radius:11px;padding:16px;min-width:0}
+.metrics small{font-size:10px;letter-spacing:.6px}
+.metrics strong{font-size:22px;margin-top:8px}
+@media(max-width:650px){.workspace .metrics{grid-template-columns:repeat(2,minmax(0,1fr));margin:14px 12px;gap:8px}.metrics>div{padding:12px}.metrics strong{font-size:18px}}
+
+/* Proportions du panneau de travail selon la référence. */
+@media(min-width:1101px) and (max-width:1400px){.layout{grid-template-columns:300px minmax(0,1fr);gap:20px}}
+@media(max-width:900px){.intro{min-height:0;padding:28px 0}.toolbar{padding:18px}.workspace .metrics{margin:0 18px 16px}}
+
+/* Canvas pegas lebih ringkas dan terpusat. */
+#simulation{width:100%;max-width:380px;margin-inline:auto}
+
+/* Kedua canvas ringkas, sejajar, dan berada di tengah area kerja. */
+.experiment-row{width:100%;max-width:760px;margin-inline:auto;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+#simulation,#graphCanvas{width:100%;max-width:340px;margin-inline:auto}
+@media(max-width:650px){.experiment-row{max-width:380px;grid-template-columns:minmax(0,1fr)}}
+
+/* Seluruh panel putih dipersempit dan dipusatkan sebagai satu area. */
+main{max-width:1260px;margin-inline:auto}
+.layout{width:100%;max-width:1204px;margin-inline:auto;grid-template-columns:280px minmax(0,1fr);gap:20px;align-items:start}
+@media(max-width:1000px){.layout{grid-template-columns:minmax(0,1fr)}}
+
+.lab-heading{color:#087b6f;font-size:13px;font-weight:700;letter-spacing:1.4px;margin-bottom:8px}
+.workspace .metrics{gap:8px;margin:0 22px 12px}
+.metrics>div{padding:10px 12px;border-radius:8px}
+.metrics small{font-size:9px;letter-spacing:.3px}
+.metrics strong{font-size:17px;margin-top:5px}
+@media(max-width:650px){.workspace .metrics{margin:0 12px 12px}.metrics>div{padding:9px 10px}.metrics strong{font-size:16px}.lab-heading{font-size:12px}}
+
+.simulation-actions{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:8px;padding:14px 10px 6px}
+.simulation-actions button{font-size:12px;padding:8px 10px}
+
+/* Kurangi ruang judul agar seluruh panel kerja bergeser ke atas. */
+.intro{min-height:0;padding:22px 0 12px}
+.intro h1{margin:7px 0}
+.intro p{margin:6px 0}
+@media(max-width:900px){.intro{min-height:0;padding:18px 0 10px}}
+
+/* Kontrol dalam satu baris; animasi menempati sisi kiri. */
+.experiment-controls,.experiment-row{width:calc(100% - 44px);max-width:none;margin-inline:22px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.experiment-controls{align-items:center;padding:10px 0 12px;gap:0}
+.simulation-actions{justify-content:flex-start;padding:0 12px 0 0}
+.experiment-controls .display-options{margin:0;padding:0 0 0 20px;border-bottom:0}
+#simulation{margin-left:0;margin-right:auto}
+.simulation-panel .length-info{margin-left:0;margin-right:18px}
+@media(max-width:650px){.experiment-controls,.experiment-row{width:calc(100% - 24px);margin-inline:12px;grid-template-columns:minmax(0,1fr)}.experiment-controls{gap:18px}.experiment-controls .display-options{padding-left:0}.simulation-panel .length-info{margin-right:0}}
