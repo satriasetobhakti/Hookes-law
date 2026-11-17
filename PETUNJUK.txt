@@ -31,3 +31,8 @@ Energi potensial yang ditampilkan adalah potensial efektif elastis +
 gravitasi relatif terhadap setimbang, yaitu ½ k ekuivalen x².
 Geometri pegas bersifat skematis; perubahan massa tidak menggeser
 posisi setimbang di layar.
+
+METODE NUMERIK: Euler eksplisit. Posisi dan kecepatan diperbarui dari
+nilai lama menggunakan sublangkah kecil otomatis. Batas langkah waktu
+ditampilkan di bawah simulasi. Energi tanpa redaman dapat meningkat
+perlahan akibat galat Euler; ini bukan penambahan energi fisik.

@@ -24,7 +24,7 @@ Alternatif: unduh `simulasi-pegas.html` sebagai berkas mentah (Raw). Berkas ini 
 
 ## Model fisika
 
-Simpangan `x` diukur dari posisi setimbang gravitasi; arah bawah positif. Persamaan gerak adalah `m x'' + b x' + kₑ x = 0`. Animasi menggunakan solusi analitik per langkah untuk redaman kurang, kritis, dan lebih. Penjelasan Euler dalam aplikasi merupakan materi pembanding, bukan metode integrasi animasi.
+Simpangan `x` diukur dari posisi setimbang gravitasi; arah bawah positif. Persamaan gerak adalah `m x'' + b x' + kₑ x = 0`. Animasi menggunakan Euler eksplisit: `x_baru = x_lama + h v_lama`, `v_baru = v_lama + h (−kₑ x_lama/m − b v_lama/m)`. Setiap interval animasi dibagi menjadi sublangkah sama besar dengan `h ≤ min(0.001, 0.002 m/kₑ, 0.01 m/max(b, 10⁻¹²))` sekon. Pemilihan ini membatasi pertumbuhan energi numerik tanpa redaman sekitar 0,2% per detik simulasi, tetapi Euler eksplisit tetap tidak melestarikan energi untuk waktu panjang. Tidak ada normalisasi energi atau solusi analitik pada pembaruan gerak.
 
 Perubahan panjang dari panjang alami: `Δℓ = x + mg/kₑ`, dengan `g = 9,81 m/s²`. Energi elastis pegas adalah `½kₑ(Δℓ)²`, sedangkan potensial efektif relatif terhadap setimbang adalah `½kₑx²`. Gambar pegas bersifat skematis.
 

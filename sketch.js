@@ -14,8 +14,21 @@ function updateControls(){for(const [id,,,,,,unit] of specs)$('out-'+id).textCon
 document.querySelectorAll('[data-type]').forEach(el=>el.onclick=()=>{state.type=el.dataset.type;document.querySelectorAll('[data-type]').forEach(b=>b.classList.toggle('active',b===el));restart();updateControls();});
 $('mode').onchange=()=>{state.mode=$('mode').value;running(false);restart();updateControls();};$('play').onclick=()=>running(!state.running);$('reset').onclick=()=>{running(false);restart();};
 $('equilibrium').onclick=resetEquilibrium;
-// Exact transition, including underdamped, critical, and overdamped motion.
-function advance(dt){const k=effectiveK(),g=state.b/(2*state.m),d=k/state.m-g*g,e=Math.exp(-g*dt),x=state.x,v=state.v;let c,s;if(Math.abs(d)<1e-10){c=1;s=dt;}else if(d>0){const w=Math.sqrt(d);c=Math.cos(w*dt);s=Math.sin(w*dt)/w;}else{const w=Math.sqrt(-d);c=Math.cosh(w*dt);s=Math.sinh(w*dt)/w;}state.x=e*(x*c+(v+g*x)*s);state.v=e*(v*c-(g*v+k/state.m*x)*s);state.t+=dt;}
+// Explicit Euler: both updates use the OLD x and v, never a new velocity.
+// Substeps limit undamped numerical energy growth to about 0.2%/simulated s.
+// Euler is not energy-conserving: a smaller step reduces, but cannot remove, drift.
+function eulerStepLimit(){return Math.min(0.001,0.002*state.m/effectiveK(),0.01*state.m/Math.max(state.b,1e-12));}
+function advance(dt){
+ if(!Number.isFinite(dt)||dt<=0)return;
+ const omega2=effectiveK()/state.m,damping=state.b/state.m;
+ const count=Math.ceil(dt/eulerStepLimit()),h=dt/count;
+ for(let i=0;i<count;i++){
+  const oldX=state.x,oldV=state.v;
+  state.x=oldX+h*oldV;
+  state.v=oldV+h*(-omega2*oldX-damping*oldV);
+ }
+ state.t+=dt;
+}
 updateControls();restart();
 const palette={ink:'#254b44',muted:'#82958b',spring:'#138b7b',second:'#c79a3d',force:'#7358c8',applied:'#db8738'};
 new p5(p=>{
@@ -41,6 +54,7 @@ new p5(p=>{
  p.noStroke();p.fill(palette.muted);p.textAlign(p.CENTER);p.textSize(10);p.text('↑ x negatif    ·    x positif ↓',p.width/2,407);
  const k=effectiveK(),ep=.5*k*state.x**2,ek=.5*state.m*state.v**2,total=ep+ek,max=Math.max(.5*k*state.a**2,total,1e-9);
  const dl=lengthChange();
+ $('numerical-step').textContent='Euler eksplisit · Δt ≤ '+eulerStepLimit().toExponential(2).replace('.',',')+' s';
  $('length-change').textContent=fmt(dl,3)+' m';
  $('length-equilibrium').textContent=fmt(state.m*9.81/k,3)+' m';
  $('length-detail').textContent=state.type==='series'?'Seri: Δℓ₁ = '+fmt(k*dl/state.k1,3)+' m; Δℓ₂ = '+fmt(k*dl/state.k2,3)+' m. Δℓ total = Δℓ₁ + Δℓ₂.':state.type==='parallel'?'Paralel: Δℓ₁ = Δℓ₂ = '+fmt(dl,3)+' m.':'Δℓ positif: memanjang; Δℓ negatif: memendek.';
