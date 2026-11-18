@@ -1,7 +1,7 @@
 # Hukum Hooke — Laboratorium Virtual Fisika
 
 **Projek Sains Komputasi Tim G Magister RPL 2026**  
-Satria Seto Bhakti, Yeyet Yetia, Yusrina Jaziroh
+Satria Seto Bhakti, Yeyet Yetia, Yustina Jaziroh
 
 Simulasi interaktif pegas vertikal berbahasa Indonesia menggunakan HTML, CSS, dan p5.js. Seluruh pustaka tersedia lokal sehingga aplikasi dapat digunakan tanpa internet.
 
