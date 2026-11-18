@@ -164,7 +164,17 @@ new p5(p=>{
  p.noStroke();p.fill('#087b6f');p.rect(cx-25,massY-25,50,50,9);p.fill('#ffffff');p.textAlign(p.CENTER);p.textSize(11);p.text(fmt(state.m,1),cx,massY-2);p.text('kg',cx,massY+13);
  const f=-effectiveK()*state.x;
  if($('showForce').checked){let len=Math.sign(f)*Math.min(70,Math.abs(f)*.65);arrow(cx-70,massY,massY+len,palette.force);p.noStroke();p.fill(palette.force);p.textAlign(p.LEFT);p.text('F pemulih = '+fmt(f,1)+' N',18,365);if(state.mode==='static'){arrow(cx+70,massY,massY-len,palette.applied);p.noStroke();p.fill(palette.applied);p.text('F luar = '+fmt(-f,1)+' N',18,383);}}
- if($('showX').checked){arrow(cx+100,eq,massY,palette.spring);p.noStroke();p.fill(palette.spring);p.textAlign(p.RIGHT);p.text('x = '+fmt(state.x,3)+' m',p.width-18,365);}
+ if($('showX').checked){
+  // Plain displacement line; the dashed guide follows the mass center.
+  p.stroke(palette.spring);p.strokeWeight(2);
+  p.line(cx+100,eq,cx+100,massY);
+  p.strokeWeight(1.5);p.drawingContext.setLineDash([5,5]);
+  p.line(cx-95,massY,cx-27,massY);
+  p.line(cx+27,massY,cx+105,massY);
+  p.drawingContext.setLineDash([]);
+  p.noStroke();p.fill(palette.spring);p.textAlign(p.RIGHT);
+  p.text('x = '+fmt(state.x,3)+' m',p.width-18,365);
+ }
  p.noStroke();p.fill(palette.muted);p.textAlign(p.CENTER);p.textSize(10);p.text('↑ x negatif    ·    x positif ↓',p.width/2,407);
  const k=effectiveK(),ep=.5*k*state.x**2,ek=.5*state.m*state.v**2,total=ep+ek,max=Math.max(.5*k*state.a**2,total,1e-9);
  const dl=lengthChange();
