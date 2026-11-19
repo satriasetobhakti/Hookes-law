@@ -80,3 +80,5 @@ main{max-width:1260px;margin-inline:auto}
 #simulation{margin-left:0;margin-right:auto}
 .simulation-panel .length-info{margin-left:0;margin-right:18px}
 @media(max-width:650px){.experiment-controls,.experiment-row{width:calc(100% - 24px);margin-inline:12px;grid-template-columns:minmax(0,1fr)}.experiment-controls{gap:18px}.experiment-controls .display-options{padding-left:0}.simulation-panel .length-info{margin-right:0}}
+
+.toolbar{flex-wrap:wrap;gap:10px}.tabs{flex-wrap:wrap;gap:2px}

@@ -1,16 +1,16 @@
 /* Lab Pegas — p5.js. Satuan model: meter, kilogram, sekon, newton. */
 const $ = id => document.getElementById(id);
-const state = {type:'single',mode:'oscillation',k1:100,k2:100,m:1,a:0.4,b:0,x:0.4,v:0,t:0,running:false,drag:false,history:[]};
-const specs=[['k1','Konstanta pegas 1',20,500,10,100,'N/m'],['k2','Konstanta pegas 2',20,500,10,100,'N/m'],['m','Massa beban',0.2,5,0.1,1,'kg'],['a','Simpangan awal',-0.8,0.8,0.01,0.4,'m'],['b','Koefisien redaman',0,5,0.1,0,'N·s/m']];
+const state = {type:'single',mode:'oscillation',k1:100,k2:100,k3:100,m:1,a:0.4,b:0,x:0.4,v:0,t:0,running:false,drag:false,history:[]};
+const specs=[['k1','Konstanta pegas 1',20,500,10,100,'N/m'],['k2','Konstanta pegas 2',20,500,10,100,'N/m'],['k3','Konstanta pegas 3',20,500,10,100,'N/m'],['m','Massa beban',0.2,5,0.1,1,'kg'],['a','Simpangan awal',-0.8,0.8,0.01,0.4,'m'],['b','Koefisien redaman',0,5,0.1,0,'N·s/m']];
 const fmt=(x,n=2)=>Number(x).toLocaleString('id-ID',{minimumFractionDigits:n,maximumFractionDigits:n});
-function effectiveK(s=state){return s.type==='series'?s.k1*s.k2/(s.k1+s.k2):s.type==='parallel'?s.k1+s.k2:s.k1;}
+function effectiveK(s=state){return s.type==='mixed'?(s.k1+s.k2)*s.k3/(s.k1+s.k2+s.k3):s.type==='series'?s.k1*s.k2/(s.k1+s.k2):s.type==='parallel'?s.k1+s.k2:s.k1;}
 function lengthChange(s=state){return s.x+s.m*9.81/effectiveK(s);}
 function resetEquilibrium(){running(false);state.drag=false;state.a=0;$('a').value=0;restart();updateControls();}
 function elasticEnergy(x,k=effectiveK(),m=state.m){return .5*k*(x+m*9.81/k)**2;}
 function restart(){state.x=state.a;state.v=0;state.t=0;state.history=[{t:0,x:state.x}];}
 function running(v){state.running=v;$('play').textContent=v?'Ⅱ Jeda':'▶ Mulai';$('status').textContent=state.mode==='static'?'● Statis':v?'● Berjalan':'● Dijeda';}
 for(const [id,label,min,max,step,val,unit] of specs){const div=document.createElement('div');div.className='control';div.id='wrap-'+id;div.innerHTML=`<label for="${id}"><span>${label}</span><output id="out-${id}"></output></label><input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${val}"><div class="ends"><span>${min}</span><span>${max} ${unit}</span></div>`;$('controls').append(div);$(id).addEventListener('input',()=>{state[id]=+$(id).value;restart();updateControls();});}
-function updateControls(){for(const [id,,,,,,unit] of specs)$('out-'+id).textContent=fmt(state[id],id.startsWith('k')?0:2)+' '+unit;$('wrap-k2').hidden=state.type==='single';$('wrap-b').hidden=state.mode==='static';$('wrap-m').hidden=state.mode==='static';$('wrap-a').querySelector('label span').textContent=state.mode==='static'?'Simpangan yang ditahan':'Simpangan awal';$('keq').textContent=fmt(effectiveK(),1)+' N/m';$('equation').textContent={single:'kₑ = k₁',series:'1/kₑ = 1/k₁ + 1/k₂',parallel:'kₑ = k₁ + k₂'}[state.type];$('play').disabled=state.mode==='static';}
+function updateControls(){for(const [id,,,,,,unit] of specs)$('out-'+id).textContent=fmt(state[id],id.startsWith('k')?0:2)+' '+unit;$('wrap-k2').hidden=state.type==='single';$('wrap-k3').hidden=state.type!=='mixed';$('wrap-b').hidden=state.mode==='static';$('wrap-m').hidden=state.mode==='static';$('wrap-a').querySelector('label span').textContent=state.mode==='static'?'Simpangan yang ditahan':'Simpangan awal';$('keq').textContent=fmt(effectiveK(),1)+' N/m';$('equation').textContent={single:'kₑ = k₁',series:'1/kₑ = 1/k₁ + 1/k₂',parallel:'kₑ = k₁ + k₂',mixed:'kₑ = (k₁ + k₂)k₃ / (k₁ + k₂ + k₃)'}[state.type];$('play').disabled=state.mode==='static';}
 document.querySelectorAll('[data-type]').forEach(el=>el.onclick=()=>{state.type=el.dataset.type;document.querySelectorAll('[data-type]').forEach(b=>b.classList.toggle('active',b===el));restart();updateControls();});
 $('mode').onchange=()=>{state.mode=$('mode').value;running(false);restart();updateControls();};$('play').onclick=()=>running(!state.running);$('reset').onclick=()=>{running(false);restart();};
 $('equilibrium').onclick=resetEquilibrium;
@@ -44,7 +44,21 @@ new p5(p=>{
  p.noStroke();p.fill(palette.muted);p.textSize(10);p.textAlign(p.LEFT);p.text(state.mode==='static'?'TARIK STATIS · massa ditahan':'OSILASI BEBAS · seret massa naik atau turun',18,25);
  if($('showEq').checked){p.stroke('#9eafa4');p.drawingContext.setLineDash([4,5]);p.line(cx-95,eq,cx+95,eq);p.drawingContext.setLineDash([]);p.noStroke();p.fill(palette.muted);p.textAlign(p.LEFT);p.text('x = 0',cx+65,eq-9);}
  p.fill('#d6e0d8');p.noStroke();p.rect(cx-65,54,130,14,4);p.stroke('#afc2b5');for(let x=cx-60;x<cx+60;x+=12)p.line(x,55,x+9,67);
- if(state.type==='parallel'){spring(anchor,attach-10,cx-32,palette.spring);spring(anchor,attach-10,cx+32,palette.second);p.stroke(palette.ink);p.line(cx-32,attach-10,cx+32,attach-10);p.line(cx,attach-10,cx,attach);}
+ if(state.type==='mixed'){
+  // Schematic lengths are bounded so even very stiff branches remain visible.
+  const fraction=Math.max(.22,Math.min(.78,state.k3/(state.k1+state.k2+state.k3)));
+  const join=anchor+(attach-anchor)*fraction;
+  spring(anchor,join,cx-32,palette.spring);spring(anchor,join,cx+32,palette.second);
+  p.stroke(palette.ink);p.strokeWeight(2);p.line(cx-32,join,cx+32,join);
+  spring(join,attach,cx,palette.force);
+  p.noStroke();p.textSize(11);p.textAlign(p.CENTER);
+  p.fill(palette.spring);p.text('k₁',cx-57,(anchor+join)/2);
+  p.fill(palette.second);p.text('k₂',cx+57,(anchor+join)/2);
+  p.fill(palette.force);p.text('k₃',cx+30,(join+attach)/2);
+  p.fill(palette.muted);p.textSize(10);p.text('k₁ ∥ k₂, lalu seri dengan k₃',cx,43);
+ }
+ else if(state.type==='parallel'){
+spring(anchor,attach-10,cx-32,palette.spring);spring(anchor,attach-10,cx+32,palette.second);p.stroke(palette.ink);p.line(cx-32,attach-10,cx+32,attach-10);p.line(cx,attach-10,cx,attach);}
  else if(state.type==='series'){const join=anchor+(attach-anchor)*state.k2/(state.k1+state.k2);spring(anchor,join,cx,palette.spring);spring(join,attach,cx,palette.second);p.fill(palette.ink);p.noStroke();p.circle(cx,join,7);}
  else spring(anchor,attach,cx,palette.spring);
  p.noStroke();p.fill('#087b6f');p.rect(cx-25,massY-25,50,50,9);p.fill('#ffffff');p.textAlign(p.CENTER);p.textSize(11);p.text(fmt(state.m,1),cx,massY-2);p.text('kg',cx,massY+13);
@@ -67,7 +81,7 @@ new p5(p=>{
  $('numerical-step').textContent='Euler eksplisit · Δt ≤ '+eulerStepLimit().toExponential(2).replace('.',',')+' s';
  $('length-change').textContent=fmt(dl,3)+' m';
  $('length-equilibrium').textContent=fmt(state.m*9.81/k,3)+' m';
- $('length-detail').textContent=state.type==='series'?'Seri: Δℓ₁ = '+fmt(k*dl/state.k1,3)+' m; Δℓ₂ = '+fmt(k*dl/state.k2,3)+' m. Δℓ total = Δℓ₁ + Δℓ₂.':state.type==='parallel'?'Paralel: Δℓ₁ = Δℓ₂ = '+fmt(dl,3)+' m.':'Δℓ positif: memanjang; Δℓ negatif: memendek.';
+ $('length-detail').textContent=state.type==='mixed'?'Campuran: Δℓ₁ = Δℓ₂ = '+fmt(k*dl/(state.k1+state.k2),3)+' m; Δℓ₃ = '+fmt(k*dl/state.k3,3)+' m. Δℓ total = Δℓ₁ + Δℓ₃. Gambar bersifat skematis.':state.type==='series'?'Seri: Δℓ₁ = '+fmt(k*dl/state.k1,3)+' m; Δℓ₂ = '+fmt(k*dl/state.k2,3)+' m. Δℓ total = Δℓ₁ + Δℓ₂.':state.type==='parallel'?'Paralel: Δℓ₁ = Δℓ₂ = '+fmt(dl,3)+' m.':'Δℓ positif: memanjang; Δℓ negatif: memendek.';
  $('rx').textContent=fmt(state.x,3)+' m';$('rf').textContent=fmt(f,2)+' N';$('rv').textContent=fmt(state.v,2)+' m/s';$('rt').textContent=fmt(2*Math.PI*Math.sqrt(state.m/k))+' s';$('clock').textContent='t = '+fmt(state.t)+' s';$('ep').textContent=fmt(ep)+' J';$('ek').textContent=fmt(ek)+' J';$('et').textContent=fmt(total)+' J';$('epbar').value=ep/max;$('ekbar').value=ek/max;
  };
  function drag(){state.x=Math.max(-.8,Math.min(.8,(p.mouseY-eq)/scale));state.a=Math.round(state.x*100)/100;state.v=0;state.t=0;state.history=[{t:0,x:state.x}];$('a').value=state.a;updateControls();}

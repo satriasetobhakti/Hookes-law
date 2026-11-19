@@ -36,3 +36,6 @@ METODE NUMERIK: Euler eksplisit. Posisi dan kecepatan diperbarui dari
 nilai lama menggunakan sublangkah kecil otomatis. Batas langkah waktu
 ditampilkan di bawah simulasi. Energi tanpa redaman dapat meningkat
 perlahan akibat galat Euler; ini bukan penambahan energi fisik.
+
+CAMPURAN: k1 dan k2 paralel, kemudian seri dengan k3. Atur ketiga
+konstanta melalui penggeser. k ekuivalen = (k1+k2)k3/(k1+k2+k3).

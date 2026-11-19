@@ -14,7 +14,7 @@ Alternatif: unduh `simulasi-pegas.html` sebagai berkas mentah (Raw). Berkas ini 
 
 ## Fitur
 
-- Susunan pegas tunggal, seri, dan paralel.
+- Susunan pegas tunggal, seri, paralel, dan campuran (k₁ paralel k₂, lalu seri dengan k₃).
 - Osilasi bebas dan tarik statis; parameter kekakuan, massa, simpangan awal, dan redaman.
 - Beban dapat diseret naik-turun.
 - Tombol Mulai/Jeda, Ulangi, serta Reset ke setimbang.
@@ -52,3 +52,7 @@ node package-local.cjs
 Untuk menayangkan aplikasi sebagai situs, atur **Settings → Pages → Deploy from a branch**, pilih cabang `main` dan direktori `/ (root)`. Halaman masuk adalah `index.html`.
 
 Dokumentasi pustaka: [p5.js](https://p5js.org/reference/).
+
+## Pegas campuran
+
+Konstanta ekuivalen: `kₑ = (k₁+k₂)k₃/(k₁+k₂+k₃)`. Regangan kelompok paralel `Δℓ₁ = Δℓ₂ = kₑ Δℓ/(k₁+k₂)`, regangan pegas seri `Δℓ₃ = kₑ Δℓ/k₃`. Total `Δℓ = Δℓ₁ + Δℓ₃`. Semua pegas dan penghubung dianggap tidak bermassa. Euler, gaya pemulih, periode, energi, dan reset memakai kₑ campuran.
