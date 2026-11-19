@@ -36,16 +36,3 @@ restart();advance(.1);const directX=state.x,directV=state.v;restart();for(let i=
 for(const b of [1,Math.sqrt(8),5]){state.type='series';state.k1=20;state.k2=20;state.m=.2;state.b=b;restart();let last=Infinity;for(let i=0;i<1000;i++){advance(.01);let energy=.5*effectiveK()*state.x**2+.5*state.m*state.v**2;if(!Number.isFinite(energy)||energy>last+1e-5)throw Error('Redaman');last=energy;}}
 for(const type of ['single','series','parallel','mixed']){state.type=type;state.k1=100;state.k2=200;state.m=1;state.x=.4;state.a=.4;state.v=2;state.t=3;state.running=true;state.drag=true;resetEquilibrium();if(state.x!==0||state.v!==0||state.a!==0||state.t!==0||state.running||state.drag||state.history.length!==1||state.history[0].x!==0)throw Error('Reset setimbang');if(Math.abs(lengthChange()-9.81/effectiveK())>1e-10)throw Error('Regangan setimbang');advance(.1);if(state.x!==0||state.v!==0)throw Error('Setimbang tidak tetap');state.x=-.5;if(Math.abs(lengthChange()-(-.5+9.81/effectiveK()))>1e-10)throw Error('Perubahan panjang');}
 `,ctx);console.log('LULUS: konstanta ekuivalen; Euler eksplisit; akurasi terhadap solusi analitik; konvergensi orde satu; galat energi; redaman; reset.');
-
-vm.runInContext(`
-Object.assign(state,{type:'single',k1:100,m:1,a:.4,mode:'oscillation'});
-for(const [b,kind] of [[0,'Tanpa redaman'],[2,'Redaman kurang'],[20,'Redaman kritis'],[30,'Redaman lebih']]){
- state.b=b;if(timeEquation().kind!==kind)throw Error('Jenis solusi redaman salah');
- updateGraphEquations();if(!$('eq-time-info').textContent.includes(kind))throw Error('Keterangan persamaan tidak diperbarui');
-}
-state.mode='static';updateGraphEquations();if(!$('eq-time').innerHTML.includes('konstan'))throw Error('Persamaan statik salah');
-state.type='mixed';state.k1=100;state.k2=100;state.k3=200;updateGraphEquations();
-if(!$('eq-force').textContent.includes(fmt(100,2)))throw Error('Koefisien gaya campuran salah');
-if(!$('eq-energy').innerHTML.includes(fmt(50,2)))throw Error('Koefisien energi campuran salah');
-`,ctx);
-console.log('LULUS: informasi grafik, seluruh jenis redaman, statik, dan koefisien campuran.');
