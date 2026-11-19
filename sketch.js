@@ -5,6 +5,25 @@ const specs=[['k1','Konstanta pegas 1',20,500,10,100,'N/m'],['k2','Konstanta peg
 const fmt=(x,n=2)=>Number(x).toLocaleString('id-ID',{minimumFractionDigits:n,maximumFractionDigits:n});
 function effectiveK(s=state){return s.type==='mixed'?(s.k1+s.k2)*s.k3/(s.k1+s.k2+s.k3):s.type==='series'?s.k1*s.k2/(s.k1+s.k2):s.type==='parallel'?s.k1+s.k2:s.k1;}
 function lengthChange(s=state){return s.x+s.m*9.81/effectiveK(s);}
+function timeEquation(s=state){
+ const omega=Math.sqrt(effectiveK(s)/s.m),gamma=s.b/(2*s.m),d=omega*omega-gamma*gamma;
+ if(s.b===0)return {kind:'Tanpa redaman',formula:'x(t) = A cos(ω₀t)',params:'ω₀ = √(kₑ/m) = '+fmt(omega,3)+' rad/s'};
+ if(Math.abs(d)<1e-10)return {kind:'Redaman kritis',formula:'x(t) = A(1 + γt)e<sup>−γt</sup>',params:'γ = b/(2m) = '+fmt(gamma,3)+' s⁻¹'};
+ if(d>0)return {kind:'Redaman kurang',formula:'x(t) = Ae<sup>−γt</sup>[cos(ω<sub>d</sub>t) + (γ/ω<sub>d</sub>) sin(ω<sub>d</sub>t)]',params:'γ = '+fmt(gamma,3)+' s⁻¹; ωd = √(kₑ/m − γ²) = '+fmt(Math.sqrt(d),3)+' rad/s'};
+ return {kind:'Redaman lebih',formula:'x(t) = Ae<sup>−γt</sup>[cosh(qt) + (γ/q) sinh(qt)]',params:'γ = '+fmt(gamma,3)+' s⁻¹; q = √(γ² − kₑ/m) = '+fmt(Math.sqrt(-d),3)+' s⁻¹'};
+}
+let equationKey='';
+function updateGraphEquations(){
+ const key=[state.type,state.mode,state.k1,state.k2,state.k3,state.m,state.b,state.a,$('graph').value].join('|');
+ if(key===equationKey)return;equationKey=key;
+ const k=effectiveK(),theory=timeEquation();
+ $('eq-time').innerHTML=state.mode==='static'?'x(t) = A (konstan)':theory.formula;
+ $('eq-time-info').textContent=state.mode==='static'?'A = '+fmt(state.a,3)+' m; beban ditahan, v = 0.':theory.kind+'. A = x(0) = '+fmt(state.a,3)+' m; v(0) = 0. '+theory.params+'. Rumus ini solusi teoritis; kurva simulasi dihitung dengan Euler eksplisit sehingga dapat sedikit berbeda.';
+ $('eq-force').textContent='F(x) = −kₑx = −'+fmt(k,2)+'x';
+ $('eq-energy').innerHTML='U<sub>ef</sub>(x) = ½kₑx² = '+fmt(k/2,2)+'x²';
+ $('eq-energy-info').textContent='Potensial efektif adalah energi elastis + gravitasi, dengan acuan nol di setimbang. Energi elastis pegas saja: Upegas(x) = ½kₑ(x + mg/kₑ)²; mg/kₑ = '+fmt(state.m*9.81/k,4)+' m.';
+ for(const [id,mode] of [['time','time'],['force','force'],['energy','energy']])$('formula-'+id).classList.toggle('selected-formula',$('graph').value===mode);
+}
 function resetEquilibrium(){running(false);state.drag=false;state.a=0;$('a').value=0;restart();updateControls();}
 function elasticEnergy(x,k=effectiveK(),m=state.m){return .5*k*(x+m*9.81/k)**2;}
 function restart(){state.x=state.a;state.v=0;state.t=0;state.history=[{t:0,x:state.x}];}
@@ -78,6 +97,7 @@ spring(anchor,attach-10,cx-32,palette.spring);spring(anchor,attach-10,cx+32,pale
  p.noStroke();p.fill(palette.muted);p.textAlign(p.CENTER);p.textSize(10);p.text('↑ x negatif    ·    x positif ↓',p.width/2,407);
  const k=effectiveK(),ep=.5*k*state.x**2,ek=.5*state.m*state.v**2,total=ep+ek,max=Math.max(.5*k*state.a**2,total,1e-9);
  const dl=lengthChange();
+ updateGraphEquations();
  $('numerical-step').textContent='Euler eksplisit · Δt ≤ '+eulerStepLimit().toExponential(2).replace('.',',')+' s';
  $('length-change').textContent=fmt(dl,3)+' m';
  $('length-equilibrium').textContent=fmt(state.m*9.81/k,3)+' m';

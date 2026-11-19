@@ -82,3 +82,5 @@ main{max-width:1260px;margin-inline:auto}
 @media(max-width:650px){.experiment-controls,.experiment-row{width:calc(100% - 24px);margin-inline:12px;grid-template-columns:minmax(0,1fr)}.experiment-controls{gap:18px}.experiment-controls .display-options{padding-left:0}.simulation-panel .length-info{margin-right:0}}
 
 .toolbar{flex-wrap:wrap;gap:10px}.tabs{flex-wrap:wrap;gap:2px}
+
+.graph-equations{margin:16px 18px 22px;font-size:12px}.graph-equations h3{font-size:14px;margin:0 0 14px}.graph-equations article{border-top:1px solid #dce6df;padding:12px 0}.graph-equations h4{font-size:12px;margin:0 0 9px;color:#45665b}.graph-equations p{font-size:11px;line-height:1.65;margin:8px 0 0}.math-formula{font-family:Cambria,Georgia,serif;font-size:16px;line-height:1.6;overflow-wrap:anywhere;color:#087b6f}.selected-formula h4{color:#087b6f;font-weight:800}.equation-units{border-top:1px solid #dce6df;padding-top:10px}

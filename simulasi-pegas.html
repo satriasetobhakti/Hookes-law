@@ -84,6 +84,8 @@ main{max-width:1260px;margin-inline:auto}
 @media(max-width:650px){.experiment-controls,.experiment-row{width:calc(100% - 24px);margin-inline:12px;grid-template-columns:minmax(0,1fr)}.experiment-controls{gap:18px}.experiment-controls .display-options{padding-left:0}.simulation-panel .length-info{margin-right:0}}
 
 .toolbar{flex-wrap:wrap;gap:10px}.tabs{flex-wrap:wrap;gap:2px}
+
+.graph-equations{margin:16px 18px 22px;font-size:12px}.graph-equations h3{font-size:14px;margin:0 0 14px}.graph-equations article{border-top:1px solid #dce6df;padding:12px 0}.graph-equations h4{font-size:12px;margin:0 0 9px;color:#45665b}.graph-equations p{font-size:11px;line-height:1.65;margin:8px 0 0}.math-formula{font-family:Cambria,Georgia,serif;font-size:16px;line-height:1.6;overflow-wrap:anywhere;color:#087b6f}.selected-formula h4{color:#087b6f;font-weight:800}.equation-units{border-top:1px solid #dce6df;padding-top:10px}
 </style></head>
 <body>
 <main>
@@ -101,7 +103,7 @@ main{max-width:1260px;margin-inline:auto}
 <section class="simulation-panel" aria-label="Pegas dan perubahan panjang"><div id="simulation" aria-label="Animasi pegas vertikal"></div><div class="length-info"><h2>Perubahan panjang pegas</h2><div><span>Δℓ dari panjang alami</span><strong id="length-change">—</strong></div><div><span>Δℓ saat setimbang</span><strong id="length-equilibrium">—</strong></div><p>Δℓ = x + mg/kₑ. Pada posisi setimbang, x = 0; pegas tetap memanjang akibat berat beban.</p><p id="length-detail"></p></div></section>
 <section class="graph-panel" aria-label="Grafik percobaan">
 
-<div class="graph-tools"><h2>Amati polanya</h2><select id="graph" aria-label="Jenis grafik"><option value="time" selected>Simpangan terhadap waktu</option><option value="force">Gaya pemulih terhadap simpangan</option><option value="energy">Energi potensial efektif</option></select></div><div id="graphCanvas"></div><p id="graph-note" class="graph-note"></p></section>
+<div class="graph-tools"><h2>Amati polanya</h2><select id="graph" aria-label="Jenis grafik"><option value="time" selected>Simpangan terhadap waktu</option><option value="force">Gaya pemulih terhadap simpangan</option><option value="energy">Energi potensial efektif</option></select></div><div id="graphCanvas"></div><p id="graph-note" class="graph-note"></p><section class="graph-equations" aria-label="Persamaan fungsi grafik"><h3>Persamaan fungsi</h3><article id="formula-time"><h4>Simpangan terhadap waktu</h4><div id="eq-time" class="math-formula"></div><p id="eq-time-info"></p></article><article id="formula-force"><h4>Gaya terhadap simpangan</h4><div id="eq-force" class="math-formula"></div><p>Gaya pemulih adalah jumlah gaya pegas dan berat. Gaya total dengan redaman: Ftotal = −kₑx − bv. Satuan F: N; x: m.</p></article><article id="formula-energy"><h4>Energi potensial terhadap simpangan</h4><div id="eq-energy" class="math-formula"></div><p id="eq-energy-info"></p></article><p class="equation-units">x: simpangan dari setimbang (m); t: waktu simulasi (s); U: energi (J). kₑ mengikuti susunan pegas yang dipilih.</p></section></section>
 </div>
 <div class="transport"><span id="numerical-step">Euler eksplisit</span><label>Kecepatan <select id="speed"><option value="0.25">0,25×</option><option value="0.5">0,5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label><span id="clock">t = 0,00 s</span></div>
 
@@ -116,6 +118,25 @@ const specs=[['k1','Konstanta pegas 1',20,500,10,100,'N/m'],['k2','Konstanta peg
 const fmt=(x,n=2)=>Number(x).toLocaleString('id-ID',{minimumFractionDigits:n,maximumFractionDigits:n});
 function effectiveK(s=state){return s.type==='mixed'?(s.k1+s.k2)*s.k3/(s.k1+s.k2+s.k3):s.type==='series'?s.k1*s.k2/(s.k1+s.k2):s.type==='parallel'?s.k1+s.k2:s.k1;}
 function lengthChange(s=state){return s.x+s.m*9.81/effectiveK(s);}
+function timeEquation(s=state){
+ const omega=Math.sqrt(effectiveK(s)/s.m),gamma=s.b/(2*s.m),d=omega*omega-gamma*gamma;
+ if(s.b===0)return {kind:'Tanpa redaman',formula:'x(t) = A cos(ω₀t)',params:'ω₀ = √(kₑ/m) = '+fmt(omega,3)+' rad/s'};
+ if(Math.abs(d)<1e-10)return {kind:'Redaman kritis',formula:'x(t) = A(1 + γt)e<sup>−γt</sup>',params:'γ = b/(2m) = '+fmt(gamma,3)+' s⁻¹'};
+ if(d>0)return {kind:'Redaman kurang',formula:'x(t) = Ae<sup>−γt</sup>[cos(ω<sub>d</sub>t) + (γ/ω<sub>d</sub>) sin(ω<sub>d</sub>t)]',params:'γ = '+fmt(gamma,3)+' s⁻¹; ωd = √(kₑ/m − γ²) = '+fmt(Math.sqrt(d),3)+' rad/s'};
+ return {kind:'Redaman lebih',formula:'x(t) = Ae<sup>−γt</sup>[cosh(qt) + (γ/q) sinh(qt)]',params:'γ = '+fmt(gamma,3)+' s⁻¹; q = √(γ² − kₑ/m) = '+fmt(Math.sqrt(-d),3)+' s⁻¹'};
+}
+let equationKey='';
+function updateGraphEquations(){
+ const key=[state.type,state.mode,state.k1,state.k2,state.k3,state.m,state.b,state.a,$('graph').value].join('|');
+ if(key===equationKey)return;equationKey=key;
+ const k=effectiveK(),theory=timeEquation();
+ $('eq-time').innerHTML=state.mode==='static'?'x(t) = A (konstan)':theory.formula;
+ $('eq-time-info').textContent=state.mode==='static'?'A = '+fmt(state.a,3)+' m; beban ditahan, v = 0.':theory.kind+'. A = x(0) = '+fmt(state.a,3)+' m; v(0) = 0. '+theory.params+'. Rumus ini solusi teoritis; kurva simulasi dihitung dengan Euler eksplisit sehingga dapat sedikit berbeda.';
+ $('eq-force').textContent='F(x) = −kₑx = −'+fmt(k,2)+'x';
+ $('eq-energy').innerHTML='U<sub>ef</sub>(x) = ½kₑx² = '+fmt(k/2,2)+'x²';
+ $('eq-energy-info').textContent='Potensial efektif adalah energi elastis + gravitasi, dengan acuan nol di setimbang. Energi elastis pegas saja: Upegas(x) = ½kₑ(x + mg/kₑ)²; mg/kₑ = '+fmt(state.m*9.81/k,4)+' m.';
+ for(const [id,mode] of [['time','time'],['force','force'],['energy','energy']])$('formula-'+id).classList.toggle('selected-formula',$('graph').value===mode);
+}
 function resetEquilibrium(){running(false);state.drag=false;state.a=0;$('a').value=0;restart();updateControls();}
 function elasticEnergy(x,k=effectiveK(),m=state.m){return .5*k*(x+m*9.81/k)**2;}
 function restart(){state.x=state.a;state.v=0;state.t=0;state.history=[{t:0,x:state.x}];}
@@ -189,6 +210,7 @@ spring(anchor,attach-10,cx-32,palette.spring);spring(anchor,attach-10,cx+32,pale
  p.noStroke();p.fill(palette.muted);p.textAlign(p.CENTER);p.textSize(10);p.text('↑ x negatif    ·    x positif ↓',p.width/2,407);
  const k=effectiveK(),ep=.5*k*state.x**2,ek=.5*state.m*state.v**2,total=ep+ek,max=Math.max(.5*k*state.a**2,total,1e-9);
  const dl=lengthChange();
+ updateGraphEquations();
  $('numerical-step').textContent='Euler eksplisit · Δt ≤ '+eulerStepLimit().toExponential(2).replace('.',',')+' s';
  $('length-change').textContent=fmt(dl,3)+' m';
  $('length-equilibrium').textContent=fmt(state.m*9.81/k,3)+' m';
